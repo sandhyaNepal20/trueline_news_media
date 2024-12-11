@@ -107,9 +107,57 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Or sign in with
+              const Text(
+                'Or sign in with',
+                style: TextStyle(color: Color(0xFF004AAD)),
+              ),
+              const SizedBox(height: 10),
+              // Social media icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildSocialButton('Google', Colors.red, Icons.email),
+                  const SizedBox(width: 10),
+                  _buildSocialButton(
+                      'Facebook', Color(0xFF004AAD), Icons.facebook),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Sign up
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Don’t have account? '),
+                  GestureDetector(
+                    onTap: () {},
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Color(0xFF004AAD),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSocialButton(String name, Color color, IconData icon) {
+    return GestureDetector(
+      onTap: () {
+        // Handle social sign-in
+      },
+      child: CircleAvatar(
+        backgroundColor: color,
+        radius: 20,
+        child: Icon(icon, color: Colors.white),
       ),
     );
   }

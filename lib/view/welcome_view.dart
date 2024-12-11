@@ -21,6 +21,31 @@ class WelcomeView extends StatelessWidget {
             height: 350, // Adjust the height of the logo
           ),
           const SizedBox(height: 20), // Spacing between logo and text
+          // Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: SizedBox(
+              width: double.infinity, // Full-width button
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF004AAD), //button color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30), // Rounded corners
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15), // Button height
+                ),
+                child: const Text(
+                  'Stay Updated >>',
+                  style: TextStyle(
+                    color: Colors.white, // White text
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

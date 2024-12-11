@@ -96,6 +96,7 @@ class _LoginViewState extends State<LoginView> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF004AAD),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -103,8 +104,7 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       child: const Text(
                         'Sign in',
-                        style: TextStyle(fontSize: 18),
-                        selectionColor: Color(0xFF004AAD),
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),

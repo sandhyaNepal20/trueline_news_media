@@ -59,6 +59,72 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
+                // Highlighted News
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    image: const DecorationImage(
+                      image: AssetImage('lib/assets/images/news1.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  height: 200,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Latest News
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Latest News',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF004AAD),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {}, // Handle See More
+                      child: const Text(
+                        'See More >>',
+                        style: TextStyle(
+                          color: Color(0xFF004AAD),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 // News List
                 ListView.builder(
                   shrinkWrap: true,

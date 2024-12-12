@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String selectedCategory = 'All'; // Track selected category
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +44,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -49,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _buildCategoryButton('All', isSelected: true),
+                      _buildCategoryButton('All'),
                       _buildCategoryButton('Politics'),
                       _buildCategoryButton('Sports'),
                       _buildCategoryButton('Education'),
@@ -159,22 +165,29 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryButton(String title, {bool isSelected = false}) {
+  Widget _buildCategoryButton(String category) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            selectedCategory = category; // Update selected category
+          });
+        },
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              isSelected ? const Color(0xFF004AAD) : Colors.grey[200],
+          backgroundColor: selectedCategory == category
+              ? const Color(0xFF004AAD)
+              : Colors.grey[200],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
         ),
         child: Text(
-          title,
+          category,
           style: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF004AAD),
+            color: selectedCategory == category
+                ? Colors.white
+                : const Color(0xFF004AAD),
           ),
         ),
       ),

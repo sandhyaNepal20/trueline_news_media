@@ -10,6 +10,39 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All'; // Track selected category
 
+  final List<Map<String, String>> newsData = [
+    // {
+    //   'title': 'Flutter 4.0 Released: What’s New?',
+    //   'category': 'Technology',
+    //   'date': '2024-12-12',
+    //   'image': 'lib/assets/images/news1.jpg',
+    // },
+    // {
+    //   'title': 'World Cup 2024: Top Highlights',
+    //   'category': 'Sports',
+    //   'date': '2024-12-10',
+    //   'image': 'lib/assets/images/news2.jpg',
+    // },
+    // {
+    //   'title': 'Government Announces New Policies',
+    //   'category': 'Politics',
+    //   'date': '2024-12-11',
+    //   'image': 'lib/assets/images/news3.jpg',
+    // },
+    // {
+    //   'title': 'Top Educational Apps of 2024',
+    //   'category': 'Education',
+    //   'date': '2024-12-09',
+    //   'image': 'lib/assets/images/news4.jpg',
+    // },
+    // {
+    //   'title': 'AI: Transforming the Tech Industry',
+    //   'category': 'Technology',
+    //   'date': '2024-12-08',
+    //   'image': 'lib/assets/images/news5.jpg',
+    // },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -106,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                // Latest News
+
+                // Latest News Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -135,8 +169,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10, // Example: Add more news tiles
-                  itemBuilder: (context, index) {},
+                  itemCount: newsData.length,
+                  itemBuilder: (context, index) {
+                    final news = newsData[index];
+                    return _buildNewsTile(
+                      title: news['title']!,
+                      category: news['category']!,
+                      date: news['date']!,
+                      imagePath: news['image']!,
+                    );
+                  },
                 ),
               ],
             ),
@@ -188,6 +230,37 @@ class _HomeScreenState extends State<HomeScreen> {
             color: selectedCategory == category
                 ? Colors.white
                 : const Color(0xFF004AAD),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewsTile({
+    required String title,
+    required String category,
+    required String date,
+    required String imagePath,
+  }) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Text('$category - $date'),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.asset(
+            imagePath,
+            height: 50,
+            width: 50,
+            fit: BoxFit.cover,
           ),
         ),
       ),

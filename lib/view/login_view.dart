@@ -8,8 +8,17 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  // Track password visibility
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+
+  void _handleLogin() {
+    if (_formKey.currentState!.validate()) {
+      // Handle successful validation logic
+      // Add your login logic here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,111 +47,134 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Email input
-                  TextField(
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          const Icon(Icons.person, color: Color(0xFF004AAD)),
-                      hintText: 'Email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  // Password input with visibility toggle
-                  TextField(
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          const Icon(Icons.lock, color: Color(0xFF004AAD)),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Color(0xFF004AAD),
+
+                  // Login Form
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Email input
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.person,
+                                color: Color(0xFF004AAD)),
+                            hintText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: _validateEmail,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                      hintText: 'Password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // Forget Password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        // Handle forget password
-                      },
-                      child: const Text(
-                        'Forget Password?',
-                        style: TextStyle(color: Color(0xFF004AAD)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Sign in button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF004AAD),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        const SizedBox(height: 15),
+
+                        // Password input with visibility toggle
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.lock,
+                                color: Color(0xFF004AAD)),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Color(0xFF004AAD),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                            hintText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: _validatePassword,
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      child: const Text(
-                        'Sign in',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Or sign in with
-                  const Text(
-                    'Or sign in with',
-                    style: TextStyle(color: Color(0xFF004AAD)),
-                  ),
-                  const SizedBox(height: 10),
-                  // Social media icons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildSocialButton('Google', Colors.red, Icons.email),
-                      const SizedBox(width: 10),
-                      _buildSocialButton(
-                          'Facebook', Color(0xFF004AAD), Icons.facebook),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // Sign up
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Don’t have account? '),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            color: Color(0xFF004AAD),
-                            fontWeight: FontWeight.bold,
+                        const SizedBox(height: 10),
+
+                        // Forget Password
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              // Handle forget password
+                            },
+                            child: const Text(
+                              'Forget Password?',
+                              style: TextStyle(color: Color(0xFF004AAD)),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 20),
+
+                        // Sign in button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _handleLogin,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF004AAD),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                            ),
+                            child: const Text(
+                              'Sign in',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Or sign in with
+                        const Text(
+                          'Or sign in with',
+                          style: TextStyle(color: Color(0xFF004AAD)),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Social media icons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildSocialButton(
+                                'Google', Colors.red, Icons.email),
+                            const SizedBox(width: 10),
+                            _buildSocialButton(
+                                'Facebook', Color(0xFF004AAD), Icons.facebook),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Sign up
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Don’t have account? '),
+                            GestureDetector(
+                              onTap: () {
+                                // Navigate to SignUp page
+                              },
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  color: Color(0xFF004AAD),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -151,6 +183,7 @@ class _LoginViewState extends State<LoginView> {
         ));
   }
 
+  // Social button builder
   Widget _buildSocialButton(String name, Color color, IconData icon) {
     return GestureDetector(
       onTap: () {
@@ -162,5 +195,23 @@ class _LoginViewState extends State<LoginView> {
         child: Icon(icon, color: Colors.white),
       ),
     );
+  }
+
+  // Validation Functions
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    return null;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trueline_news_media/view/login_view.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -8,19 +9,50 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  bool _isPasswordVisible = false; // To toggle visibility of password
+  bool _isConfirmPasswordVisible =
+      false; // To toggle visibility of confirm password
+
+  void _handleSignUp() {
+    if (_formKey.currentState!.validate()) {
+      // Handle successful validation logic
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginView(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF004AAD)),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous page
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Form(
+            key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
                 const Text(
@@ -31,33 +63,46 @@ class _SignUpViewState extends State<SignUpView> {
                     color: Color(0xFF004AAD),
                   ),
                 ),
-                const SizedBox(height: 30),
-                // Full Name input
-                TextField(
+                const SizedBox(height: 20),
+                // Full Name Input
+                TextFormField(
+                  controller: _fullNameController,
                   decoration: InputDecoration(
                     prefixIcon:
                         const Icon(Icons.person, color: Color(0xFF004AAD)),
                     hintText: 'Full Name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF004AAD)),
                     ),
                   ),
+                  validator: _validateFullName,
                 ),
                 const SizedBox(height: 15),
-                // Email input
-                TextField(
+                // Email Input
+                TextFormField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     prefixIcon:
                         const Icon(Icons.email, color: Color(0xFF004AAD)),
                     hintText: 'Email',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF004AAD)),
                     ),
                   ),
+                  validator: _validateEmail,
                 ),
                 const SizedBox(height: 15),
-                // Password input with visibility toggle
-                TextField(
+                // Password Input
+                TextFormField(
+                  controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     prefixIcon:
@@ -67,7 +112,7 @@ class _SignUpViewState extends State<SignUpView> {
                         _isPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: Color(0xFF004AAD),
+                        color: Colors.grey,
                       ),
                       onPressed: () {
                         setState(() {
@@ -78,12 +123,18 @@ class _SignUpViewState extends State<SignUpView> {
                     hintText: 'Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF004AAD)),
                     ),
                   ),
+                  validator: _validatePassword,
                 ),
                 const SizedBox(height: 15),
-                // Confirm Password input with visibility toggle
-                TextField(
+                // Confirm Password Input
+                TextFormField(
+                  controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
                     prefixIcon:
@@ -93,7 +144,7 @@ class _SignUpViewState extends State<SignUpView> {
                         _isConfirmPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
-                        color: Color(0xFF004AAD),
+                        color: Colors.grey,
                       ),
                       onPressed: () {
                         setState(() {
@@ -105,16 +156,20 @@ class _SignUpViewState extends State<SignUpView> {
                     hintText: 'Confirm Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF004AAD)),
                     ),
                   ),
+                  validator: _validateConfirmPassword,
                 ),
                 const SizedBox(height: 20),
-
-                // Sign Up button------------------------------------------------------------------------------
+                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _handleSignUp,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF004AAD),
                       shape: RoundedRectangleBorder(
@@ -124,12 +179,14 @@ class _SignUpViewState extends State<SignUpView> {
                     ),
                     child: const Text(
                       'Sign Up',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 // Already have an account? Sign In
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -155,5 +212,45 @@ class _SignUpViewState extends State<SignUpView> {
         ),
       ),
     );
+  }
+
+  //-----------------------------------------------------------------------------------------------------
+
+  // Validation Functions
+  String? _validateFullName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your full name';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != _passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 }

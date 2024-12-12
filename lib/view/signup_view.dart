@@ -55,12 +55,14 @@ class _SignUpViewState extends State<SignUpView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF004AAD),
+                Center(
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF004AAD),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -68,16 +70,13 @@ class _SignUpViewState extends State<SignUpView> {
                 TextFormField(
                   controller: _fullNameController,
                   decoration: InputDecoration(
+                    labelText: 'Full Name', // Label text for the full name
+                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     prefixIcon:
                         const Icon(Icons.person, color: Color(0xFF004AAD)),
-                    hintText: 'Full Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF004AAD)),
-                    ),
                   ),
                   validator: _validateFullName,
                 ),
@@ -86,16 +85,13 @@ class _SignUpViewState extends State<SignUpView> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
+                    labelText: 'Email', // Label text for the email
+                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     prefixIcon:
                         const Icon(Icons.email, color: Color(0xFF004AAD)),
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF004AAD)),
-                    ),
                   ),
                   validator: _validateEmail,
                 ),
@@ -105,6 +101,11 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
+                    labelText: 'Password', // Label text for the password
+                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     prefixIcon:
                         const Icon(Icons.lock, color: Color(0xFF004AAD)),
                     suffixIcon: IconButton(
@@ -120,14 +121,6 @@ class _SignUpViewState extends State<SignUpView> {
                         });
                       },
                     ),
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF004AAD)),
-                    ),
                   ),
                   validator: _validatePassword,
                 ),
@@ -137,6 +130,12 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
+                    labelText:
+                        'Confirm Password', // Label text for confirm password
+                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     prefixIcon:
                         const Icon(Icons.lock, color: Color(0xFF004AAD)),
                     suffixIcon: IconButton(
@@ -153,14 +152,6 @@ class _SignUpViewState extends State<SignUpView> {
                         });
                       },
                     ),
-                    hintText: 'Confirm Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFF004AAD)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF004AAD)),
-                    ),
                   ),
                   validator: _validateConfirmPassword,
                 ),
@@ -173,7 +164,7 @@ class _SignUpViewState extends State<SignUpView> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF004AAD),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),

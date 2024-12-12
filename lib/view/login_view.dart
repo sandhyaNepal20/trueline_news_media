@@ -57,11 +57,13 @@ class _LoginViewState extends State<LoginView> {
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.person,
-                                color: Color(0xFF004AAD)),
-                            hintText: 'Email',
+                            labelText: 'Email', // Label text
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.email,
+                              color: Color(0xFF004AAD),
                             ),
                           ),
                           validator: _validateEmail,
@@ -73,8 +75,14 @@ class _LoginViewState extends State<LoginView> {
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.lock,
-                                color: Color(0xFF004AAD)),
+                            labelText: 'Password', // Label text
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Color(0xFF004AAD),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
@@ -87,10 +95,6 @@ class _LoginViewState extends State<LoginView> {
                                   _isPasswordVisible = !_isPasswordVisible;
                                 });
                               },
-                            ),
-                            hintText: 'Password',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                           validator: _validatePassword,

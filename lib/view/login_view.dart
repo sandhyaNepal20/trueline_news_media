@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trueline_news_media/view/Homepage_view.dart';
+import 'package:trueline_news_media/view/signup_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -15,8 +17,22 @@ class _LoginViewState extends State<LoginView> {
 
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
-      // Handle successful validation logic
-      // Add your login logic here
+      // Show success snack bar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login Successful!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Navigate to LoginView after delay
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      });
     }
   }
 
@@ -165,7 +181,11 @@ class _LoginViewState extends State<LoginView> {
                             const Text('Don’t have account? '),
                             GestureDetector(
                               onTap: () {
-                                // Navigate to SignUp page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const SignUpView()),
+                                );
                               },
                               child: const Text(
                                 'Sign Up',

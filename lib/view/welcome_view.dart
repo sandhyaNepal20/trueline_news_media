@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trueline_news_media/view/login_view.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
@@ -27,7 +28,12 @@ class WelcomeView extends StatelessWidget {
             child: SizedBox(
               width: double.infinity, // Full-width button
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginView()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF004AAD), //button color
                   shape: RoundedRectangleBorder(

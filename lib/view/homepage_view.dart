@@ -11,36 +11,39 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All'; // Track selected category
 
   final List<Map<String, String>> newsData = [
-    // {
-    //   'title': 'Flutter 4.0 Released: What’s New?',
-    //   'category': 'Technology',
-    //   'date': '2024-12-12',
-    //   'image': 'lib/assets/images/news1.jpg',
-    // },
-    // {
-    //   'title': 'World Cup 2024: Top Highlights',
-    //   'category': 'Sports',
-    //   'date': '2024-12-10',
-    //   'image': 'lib/assets/images/news2.jpg',
-    // },
-    // {
-    //   'title': 'Government Announces New Policies',
-    //   'category': 'Politics',
-    //   'date': '2024-12-11',
-    //   'image': 'lib/assets/images/news3.jpg',
-    // },
-    // {
-    //   'title': 'Top Educational Apps of 2024',
-    //   'category': 'Education',
-    //   'date': '2024-12-09',
-    //   'image': 'lib/assets/images/news4.jpg',
-    // },
-    // {
-    //   'title': 'AI: Transforming the Tech Industry',
-    //   'category': 'Technology',
-    //   'date': '2024-12-08',
-    //   'image': 'lib/assets/images/news5.jpg',
-    // },
+    {
+      'title':
+          'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
+      'category': 'Politics',
+      'date': '2024-12-12',
+      'image': 'lib/assets/images/news1.jpg',
+    },
+    {
+      'title': 'FNJ election today',
+      'category': 'politics',
+      'date': '2024-12-13',
+      'image': 'lib/assets/images/news6.png',
+    },
+    {
+      'title':
+          'Park Police say no more major crimes reported along San Antonio trails',
+      'category': 'Politics',
+      'date': '2024-12-12',
+      'image': 'lib/assets/images/news5.png',
+    },
+    {
+      'title':
+          'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
+      'category': 'Education',
+      'date': '2024-12-12',
+      'image': 'lib/assets/images/news1.jpg',
+    },
+    {
+      'title': 'Goat Life: How Indian Cinema Neglects Social Issues',
+      'category': 'world news',
+      'date': '2024-11-30',
+      'image': 'lib/assets/images/news3.jpg',
+    },
   ];
 
   @override
@@ -103,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: const DecorationImage(
-                      image: AssetImage('lib/assets/images/news1.jpg'),
+                      image: AssetImage('lib/assets/images/news7.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -127,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
+                            'Park Police say no more major crimes reported along San Antonio trails',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -258,8 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(10),
           child: Image.asset(
             imagePath,
-            height: 50,
-            width: 50,
+            height: 100,
+            width: 100,
             fit: BoxFit.cover,
           ),
         ),

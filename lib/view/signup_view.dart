@@ -22,13 +22,22 @@ class _SignUpViewState extends State<SignUpView> {
 
   void _handleSignUp() {
     if (_formKey.currentState!.validate()) {
-      // Handle successful validation logic
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginView(),
+      // Show success snack bar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sign Up Successful!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
         ),
       );
+
+      // Navigate to LoginView after delay
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginView()),
+        );
+      });
     }
   }
 

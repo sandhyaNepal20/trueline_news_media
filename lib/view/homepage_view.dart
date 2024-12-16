@@ -20,27 +20,27 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       'title': 'FNJ election today',
-      'category': 'politics',
+      'category': 'Politics',
       'date': '2024-12-13',
       'image': 'lib/assets/images/news6.png',
     },
     {
       'title':
           'Park Police say no more major crimes reported along San Antonio trails',
-      'category': 'Politics',
+      'category': 'World News',
       'date': '2024-12-12',
       'image': 'lib/assets/images/news5.png',
     },
     {
       'title':
           'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
-      'category': 'Education',
+      'category': 'Politics',
       'date': '2024-12-12',
       'image': 'lib/assets/images/news1.jpg',
     },
     {
       'title': 'Goat Life: How Indian Cinema Neglects Social Issues',
-      'category': 'world news',
+      'category': 'World News',
       'date': '2024-11-30',
       'image': 'lib/assets/images/news3.jpg',
     },
@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  height: 200,
+                  height: 380, // Increased height for a larger panel
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -133,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Park Police say no more major crimes reported along San Antonio trails',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize:
+                                  18, // Adjusted text size for better visibility
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -142,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
 
                 // Latest News Section
                 Row(
@@ -150,9 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       'Latest News',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 19,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF004AAD),
+                        color: Colors.black,
                       ),
                     ),
                     TextButton(
@@ -160,22 +162,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Text(
                         'See More >>',
                         style: TextStyle(
-                          color: Color(0xFF004AAD),
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
+                          fontSize: 22,
                         ),
                       ),
                     ),
                   ],
                 ),
-
-                // News List
-                ListView.builder(
+                const SizedBox(height: 10),
+// News Grid
+                GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // Two columns
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.8, // Adjusted aspect ratio
+                  ),
                   itemCount: newsData.length,
                   itemBuilder: (context, index) {
                     final news = newsData[index];
-                    return _buildNewsTile(
+                    return _buildNewsCard(
                       title: news['title']!,
                       category: news['category']!,
                       date: news['date']!,
@@ -188,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        //--------------------------------------------------------------------------------------------------
+        // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(
@@ -205,6 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
           selectedItemColor: const Color(0xFF004AAD),
+          unselectedItemColor: Colors.black,
         ),
       ),
     );
@@ -239,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNewsTile({
+  Widget _buildNewsCard({
     required String title,
     required String category,
     required String date,
@@ -248,24 +258,47 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+            child: Image.asset(
+              imagePath,
+              height: 100,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        subtitle: Text('$category - $date'),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            imagePath,
-            height: 100,
-            width: 100,
-            fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 19,
+                  ),
+                ),
+                const SizedBox(height: 35),
+                Text(
+                  '$category - $date',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

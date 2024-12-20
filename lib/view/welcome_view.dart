@@ -15,28 +15,28 @@ class _WelcomeViewState extends State<WelcomeView> {
   // List of content for each welcome screen
   final List<Map<String, String>> _pages = [
     {
-      'image': 'assets/images/logo1.png',
+      'image': 'assets/images/logo.png',
       'title': 'Welcome to TrueLine News',
       'description': 'Stay updated with the latest news from around the world.',
     },
     {
-      'image': 'assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo.png', // Same logo in all screens
       'title': 'Breaking News',
       'description': 'Get real-time notifications for breaking news.',
     },
     {
-      'image': 'assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo.png', // Same logo in all screens
       'title': 'Categories',
       'description':
           'Browse news by categories like Sports, Technology, and more.',
     },
     {
-      'image': 'assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo.png', // Same logo in all screens
       'title': 'User Engagement',
       'description': 'Engage with others by commenting and sharing articles.',
     },
     {
-      'image': 'assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo.png', // Same logo in all screens
       'title': 'Start Now',
       'description': 'Let\'s get started with your news journey.',
     },
@@ -128,7 +128,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                       _pageController.jumpToPage(_pages.length - 1);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
+                      backgroundColor: const Color(0xFF004AAD),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

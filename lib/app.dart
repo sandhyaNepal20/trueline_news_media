@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: getApplicationTheme(),
 
-      initialRoute: '/homepage', // Set the initial route to LoginPage
+      initialRoute: '/welcome', // Set the initial route to LoginPage
       routes: {
         '/welcome': (context) => const WelcomeView(),
         '/login': (context) => const LoginView(),

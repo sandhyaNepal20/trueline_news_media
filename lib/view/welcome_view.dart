@@ -9,34 +9,34 @@ class WelcomeView extends StatefulWidget {
 }
 
 class _WelcomeViewState extends State<WelcomeView> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   // List of content for each welcome screen
   final List<Map<String, String>> _pages = [
     {
-      'image': 'lib/assets/images/logo1.png',
+      'image': 'assets/images/logo1.png',
       'title': 'Welcome to TrueLine News',
       'description': 'Stay updated with the latest news from around the world.',
     },
     {
-      'image': 'lib/assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo1.png', // Same logo in all screens
       'title': 'Breaking News',
       'description': 'Get real-time notifications for breaking news.',
     },
     {
-      'image': 'lib/assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo1.png', // Same logo in all screens
       'title': 'Categories',
       'description':
           'Browse news by categories like Sports, Technology, and more.',
     },
     {
-      'image': 'lib/assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo1.png', // Same logo in all screens
       'title': 'User Engagement',
       'description': 'Engage with others by commenting and sharing articles.',
     },
     {
-      'image': 'lib/assets/images/logo1.png', // Same logo in all screens
+      'image': 'assets/images/logo1.png', // Same logo in all screens
       'title': 'Start Now',
       'description': 'Let\'s get started with your news journey.',
     },
@@ -105,7 +105,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _currentPage == index
-                      ? Color(0xFF004AAD) // Active dot color
+                      ? const Color(0xFF004AAD) // Active dot color
                       : Colors.grey, // Inactive dot color
                 ),
               );
@@ -156,7 +156,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF004AAD),
+                    backgroundColor: const Color(0xFF004AAD),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

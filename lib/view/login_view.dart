@@ -39,6 +39,11 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Text('Login'),
+          centerTitle: true,
+          automaticallyImplyLeading: false, // Disable back button if needed
+        ),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -49,7 +54,7 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   // Logo
                   Image.asset(
-                    'lib/assets/images/logo1.png', // Replace with your image path
+                    'assets/images/logo1.png', // Replace with your image path
                     height: 200,
                   ),
 
@@ -104,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
                                 _isPasswordVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Color(0xFF004AAD),
+                                color: const Color(0xFF004AAD),
                               ),
                               onPressed: () {
                                 setState(() {
@@ -138,7 +143,7 @@ class _LoginViewState extends State<LoginView> {
                           child: ElevatedButton(
                             onPressed: _handleLogin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF004AAD),
+                              backgroundColor: const Color(0xFF004AAD),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -167,8 +172,8 @@ class _LoginViewState extends State<LoginView> {
                             _buildSocialButton(
                                 'Google', Colors.red, Icons.email),
                             const SizedBox(width: 10),
-                            _buildSocialButton(
-                                'Facebook', Color(0xFF004AAD), Icons.facebook),
+                            _buildSocialButton('Facebook',
+                                const Color(0xFF004AAD), Icons.facebook),
                             const SizedBox(width: 10),
                           ],
                         ),

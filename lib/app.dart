@@ -1,5 +1,6 @@
 // import 'package:trueline_news_media/view/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:trueline_news_media/core/app_theme/app_theme.dart';
 import 'package:trueline_news_media/view/homepage_view.dart';
 import 'package:trueline_news_media/view/login_view.dart';
 import 'package:trueline_news_media/view/signup_view.dart';
@@ -12,7 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/welcome', // Set the initial route to LoginPage
+      theme: getApplicationTheme(),
+
+      initialRoute: '/homepage', // Set the initial route to LoginPage
       routes: {
         '/welcome': (context) => const WelcomeView(),
         '/login': (context) => const LoginView(),

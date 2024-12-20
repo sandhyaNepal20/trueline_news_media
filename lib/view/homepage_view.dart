@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trueline_news_media/view/profile_view.dart';
+import 'package:trueline_news_media/view/save_view.dart';
+import 'package:trueline_news_media/view/search_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,6 +11,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  List<Widget> lstBottomScreen = [
+    const HomeScreen(),
+    const SearchView(),
+    const SaveView(),
+    const ProfileView(),
+  ];
+
   String selectedCategory = 'All'; // Track selected category
 
   final List<Map<String, String>> newsData = [
@@ -16,33 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
           'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
       'category': 'Politics',
       'date': '2024-12-12',
-      'image': 'lib/assets/images/news1.jpg',
+      'image': 'assets/images/news1.jpg',
     },
     {
       'title': 'FNJ election today',
       'category': 'Politics',
       'date': '2024-12-13',
-      'image': 'lib/assets/images/news6.png',
+      'image': 'assets/images/news6.png',
     },
     {
       'title':
           'Park Police say no more major crimes reported along San Antonio trails',
       'category': 'World News',
       'date': '2024-12-12',
-      'image': 'lib/assets/images/news5.png',
-    },
-    {
-      'title':
-          'Prime Minister Oli, Foreign Minister Deuba brief President Paudel on China visit',
-      'category': 'Politics',
-      'date': '2024-12-12',
-      'image': 'lib/assets/images/news1.jpg',
+      'image': 'assets/images/news5.png',
     },
     {
       'title': 'Goat Life: How Indian Cinema Neglects Social Issues',
       'category': 'World News',
       'date': '2024-11-30',
-      'image': 'lib/assets/images/news3.jpg',
+      'image': 'assets/images/news3.jpg',
     },
   ];
 
@@ -50,35 +55,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: Color(0xFF004AAD)),
-            onPressed: () {}, // Handle menu button
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('lib/assets/images/logo1.png', height: 40), // Logo
-              const SizedBox(width: 5),
-              const Text(
-                'Trueline News',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF004AAD),
+          title: Padding(
+            padding: const EdgeInsets.only(
+                top: 8.5), // Adjust the top padding as needed
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 50, // Adjust the height for better alignment
                 ),
-              ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Color(0xFF004AAD)),
-              onPressed: () {}, // Handle notifications
+                const SizedBox(width: 8), // Space between logo and text
+                const Text(
+                  'Trueline News',
+                  style: TextStyle(
+                    fontSize: 20, // Font size for the text
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+          centerTitle: true,
+          elevation: 1,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -106,11 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: const DecorationImage(
-                      image: AssetImage('lib/assets/images/news7.png'),
+                      image: AssetImage('assets/images/news7.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
-                  height: 380, // Increased height for a larger panel
+                  height: 380,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -123,18 +124,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
+                    child: const Padding(
+                      padding: EdgeInsets.all(16),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Park Police say no more major crimes reported along San Antonio trails',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize:
-                                  18, // Adjusted text size for better visibility
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -154,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
                       ),
                     ),
                     TextButton(
@@ -162,24 +161,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Text(
                         'See More >>',
                         style: TextStyle(
-                          color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 22,
                         ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
-// News Grid
+
+                // News Grid
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Two columns
+                    crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 0.8, // Adjusted aspect ratio
+                    childAspectRatio: 0.8,
                   ),
                   itemCount: newsData.length,
                   itemBuilder: (context, index) {
@@ -196,9 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-
-        // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -209,12 +206,23 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Search',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.save),
+              label: 'Saved',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
             ),
           ],
-          selectedItemColor: const Color(0xFF004AAD),
+          backgroundColor: Colors.yellow,
+          selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.black,
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );
@@ -292,7 +300,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   '$category - $date',
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Colors.black,
                   ),
                 ),
               ],

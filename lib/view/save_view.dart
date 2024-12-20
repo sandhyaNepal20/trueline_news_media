@@ -10,10 +10,8 @@ class SaveView extends StatefulWidget {
 class _SaveViewState extends State<SaveView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('This is save screen'),
-      ),
+    return const Scaffold(
+      body: Center(child: Text('This is save screen')),
     );
   }
 }

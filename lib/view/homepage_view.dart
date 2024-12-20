@@ -80,120 +80,139 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           centerTitle: true,
           elevation: 1,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: IconButton(
+                icon: const Icon(Icons.notifications),
+                color: Colors.white,
+                onPressed: () {
+                  // Handle notification icon press
+                  // For example, navigate to a notifications screen
+                },
+              ),
+            ),
+          ],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Category buttons
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+        body: _selectedIndex == 0
+            ? SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCategoryButton('All'),
-                      _buildCategoryButton('Politics'),
-                      _buildCategoryButton('Sports'),
-                      _buildCategoryButton('Education'),
-                      _buildCategoryButton('Technology'),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Highlighted News
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/news7.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  height: 380,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withOpacity(0.7),
-                          Colors.transparent,
-                        ],
+                      // Horizontal Category buttons with scroll
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildCategoryButton('All'),
+                            _buildCategoryButton('Politics'),
+                            _buildCategoryButton('Sports'),
+                            _buildCategoryButton('Education'),
+                            _buildCategoryButton('Technology'),
+                            _buildCategoryButton('Entertainment'),
+                            _buildCategoryButton('Science'),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 20),
+                      // Highlighted News
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/images/news7.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        height: 380,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.7),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Park Police say no more major crimes reported along San Antonio trails',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Latest News Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Park Police say no more major crimes reported along San Antonio trails',
+                          const Text(
+                            'Latest News',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 19,
                               fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {}, // Handle See More
+                            child: const Text(
+                              'See More >>',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 23,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
-                // Latest News Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Latest News',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {}, // Handle See More
-                      child: const Text(
-                        'See More >>',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                      // News Grid
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.8,
                         ),
+                        itemCount: newsData.length,
+                        itemBuilder: (context, index) {
+                          final news = newsData[index];
+                          return _buildNewsCard(
+                            title: news['title']!,
+                            category: news['category']!,
+                            date: news['date']!,
+                            imagePath: news['image']!,
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-                // News Grid
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.8,
+                    ],
                   ),
-                  itemCount: newsData.length,
-                  itemBuilder: (context, index) {
-                    final news = newsData[index];
-                    return _buildNewsCard(
-                      title: news['title']!,
-                      category: news['category']!,
-                      date: news['date']!,
-                      imagePath: news['image']!,
-                    );
-                  },
                 ),
-              ],
-            ),
-          ),
-        ),
+              )
+            : lstBottomScreen[
+                _selectedIndex], // Other screens for bottom navigation
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: const [
@@ -214,13 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Profile',
             ),
           ],
-          backgroundColor: Colors.yellow,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.black,
+          backgroundColor: const Color(0xFF004AAD),
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.white,
           currentIndex: _selectedIndex,
           onTap: (index) {
             setState(() {
-              _selectedIndex = index;
+              _selectedIndex = index; // Update selected index
             });
           },
         ),
@@ -244,6 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         ),
         child: Text(
           category,

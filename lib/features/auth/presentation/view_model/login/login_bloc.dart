@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trueline_news_media/features/auth/domain/use_case/login_user_usecase.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
-import 'package:trueline_news_media/view/Homepage_view.dart';
+import 'package:trueline_news_media/home/presentation/view/home_view.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

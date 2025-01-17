@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trueline_news_media/features/auth/presentation/view_model/login/login_bloc.dart';
+import 'package:trueline_news_media/features/onboarding/presentation/view/on_board_model.dart';
+import 'package:trueline_news_media/view/login_view.dart';
 
-class OnboardingCubit extends Cubit<void> {
-  OnboardingCubit(this._loginBloc) : super(null);
+// onboarding_cubit.dart
+class OnboardingCubit extends Cubit<int> {
+  final PageController pageController = PageController();
 
-  final LoginBloc _loginBloc;
+  OnboardingCubit() : super(0);
 
-  void init(BuildContext context) {}
+  void goToNextPage() {
+    if (state < pages.length - 1) {
+      emit(state + 1);
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void skipToLastPage() {
+    emit(pages.length - 1);
+    pageController.jumpToPage(pages.length - 1);
+  }
+
+  void navigateToAuthScreen(BuildContext context) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const LoginView(),
+      ),
+    );
+  }
+
+  @override
+  Future<void> close() {
+    pageController.dispose();
+    return super.close();
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trueline_news_media/features/auth/presentation/view/login_view.dart';
 import 'package:trueline_news_media/features/onboarding/presentation/view/on_board_model.dart';
-import 'package:trueline_news_media/view/login_view.dart';
 
 // onboarding_cubit.dart
 class OnboardingCubit extends Cubit<int> {

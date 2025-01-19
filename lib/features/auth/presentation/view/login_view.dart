@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trueline_news_media/features/auth/presentation/view/register_view.dart';
-import 'package:trueline_news_media/view/Homepage_view.dart';
+import 'package:trueline_news_media/home/presentation/view/home_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

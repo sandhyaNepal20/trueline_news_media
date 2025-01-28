@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trueline_news_media/features/auth/presentation/view/login_view.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
 
 class RegisterView extends StatefulWidget {
@@ -22,26 +21,26 @@ class _SignUpViewState extends State<RegisterView> {
   bool _isConfirmPasswordVisible =
       false; // To toggle visibility of confirm password
 
-  void _handleSignUp() {
-    if (_formKey.currentState!.validate()) {
-      // Show success snack bar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign Up Successful!'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
+  // void _handleSignUp() {
+  //   if (_formKey.currentState!.validate()) {
+  //     // Show success snack bar
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Sign Up Successful!'),
+  //         backgroundColor: Colors.green,
+  //         duration: Duration(seconds: 2),
+  //       ),
+  //     );
 
-      // Navigate to LoginView after delay
-      Future.delayed(const Duration(seconds: 2), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginView()),
-        );
-      });
-    }
-  }
+  // Navigate to LoginView after delay
+  //     Future.delayed(const Duration(seconds: 2), () {
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const LoginView()),
+  //       );
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +81,6 @@ class _SignUpViewState extends State<RegisterView> {
                   controller: _fullNameController,
                   decoration: InputDecoration(
                     labelText: 'Full Name', // Label text for the full name
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -97,7 +95,6 @@ class _SignUpViewState extends State<RegisterView> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email', // Label text for the email
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -113,7 +110,6 @@ class _SignUpViewState extends State<RegisterView> {
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Password', // Label text for the password
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -141,9 +137,7 @@ class _SignUpViewState extends State<RegisterView> {
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
-                    labelText:
-                        'Confirm Password', // Label text for confirm password
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
+                    labelText: 'Confirm Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

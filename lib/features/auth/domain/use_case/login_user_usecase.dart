@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:trueline_news_media/app/shared_prefs/token_shared_prefs.dart';
 import 'package:trueline_news_media/app/usecase/usecase.dart';
 import 'package:trueline_news_media/core/error/failure.dart';
 import 'package:trueline_news_media/features/auth/domain/repository/auth_repository.dart';
@@ -25,7 +26,7 @@ class LoginParams extends Equatable {
 class LoginUseCase implements UsecaseWithParams<String, LoginParams> {
   final IAuthRepository repository;
 
-  LoginUseCase(this.repository);
+  LoginUseCase(this.repository, TokenSharedPrefs tokenSharedPrefs);
 
   @override
   Future<Either<Failure, String>> call(LoginParams params) {

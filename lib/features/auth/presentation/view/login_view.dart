@@ -178,7 +178,7 @@ class _LoginViewState extends State<LoginView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Don’t have account? '),
+                        const Text('Don’t have account  ? '),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(

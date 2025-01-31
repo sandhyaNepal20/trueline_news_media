@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
 
 class RegisterView extends StatefulWidget {
@@ -22,15 +23,32 @@ class _RegisterViewState extends State<RegisterView> {
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-  File? _image;
-  final ImagePicker _picker = ImagePicker();
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+  // Check for camera permission
+  Future<void> checkCameraPermission() async {
+    if (await Permission.camera.request().isRestricted ||
+        await Permission.camera.request().isDenied) {
+      await Permission.camera.request();
+    }
+  }
+
+  File? _img;
+  Future _browseImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      if (image != null) {
+        setState(() {
+          _img = File(image.path);
+          // Send image to server
+          context.read<SignupBloc>().add(
+                UploadImage(file: _img!),
+              );
+        });
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -67,7 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
                           children: [
                             ElevatedButton.icon(
                               onPressed: () {
-                                _pickImage(ImageSource.camera);
+                                _browseImage(ImageSource.camera);
                                 Navigator.pop(context);
                               },
                               icon: const Icon(Icons.camera),
@@ -75,7 +93,7 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
-                                _pickImage(ImageSource.gallery);
+                                _browseImage(ImageSource.gallery);
                                 Navigator.pop(context);
                               },
                               icon: const Icon(Icons.image),
@@ -88,8 +106,8 @@ class _RegisterViewState extends State<RegisterView> {
                   },
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: _image != null
-                        ? FileImage(_image!)
+                    backgroundImage: _img != null
+                        ? FileImage(_img!)
                         : const AssetImage('assets/images/profile.jpg')
                             as ImageProvider,
                   ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trueline_news_media/features/auth/presentation/view/register_view.dart';
+import 'package:trueline_news_media/features/auth/presentation/view_model/login/login_bloc.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -120,15 +122,22 @@ class _LoginViewState extends State<LoginView> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // final email = _emailController.text;
-                          // final password = _passwordController.text;
-                          // context.read<LoginBloc>().add(
-                          //       LoginUserEvent(
-                          //         email: email,
-                          //         password: password,
-                          //         context: context,
-                          //       ),
-                          //     );
+                          if (_formKey.currentState!.validate()) {
+                            final email = _emailController.text;
+                            final password = _passwordController.text;
+                            debugPrint(
+                                "Form is valid! Email: $email, Password: $password");
+
+                            context.read<LoginBloc>().add(
+                                  LoginUserEvent(
+                                    email: email,
+                                    password: password,
+                                    context: context,
+                                  ),
+                                );
+                          } else {
+                            debugPrint("Form is invalid!");
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF004AAD),

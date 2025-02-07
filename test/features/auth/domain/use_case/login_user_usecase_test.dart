@@ -73,5 +73,15 @@ void main() {
           const Left(ApiFailure(message: 'email or password cannot be empty')));
       verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
     });
+
+    test('should return ApiFailure when email is empty', () async {
+      const invalidParams = LoginParams(email: '', password: testPassword);
+
+      final result = await loginUseCase(invalidParams);
+
+      expect(result,
+          const Left(ApiFailure(message: 'email or password cannot be empty')));
+      verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
+    });
   });
 }

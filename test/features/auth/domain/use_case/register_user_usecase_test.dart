@@ -72,4 +72,26 @@ void main() {
     verify(() => repository.registerStudent(any())).called(1);
     verifyNoMoreInteractions(repository);
   });
+
+  test('should handle registration failure ', () async {
+    // Arrange
+    const failure = ApiFailure(message: 'Registration failed', statusCode: 400);
+    when(() => repository.registerStudent(any()))
+        .thenAnswer((_) async => const Left(failure));
+
+    // Act
+    final result = await useCase(
+      const RegisterUserParams(
+        fullName: 'Sandhya Nepal',
+        email: 'sandhya@example.com',
+        password: 'securePass123',
+        image: null,
+      ),
+    );
+
+    // Assert
+    expect(result, equals(const Left(failure)));
+    verify(() => repository.registerStudent(any())).called(1);
+    verifyNoMoreInteractions(repository);
+  });
 }

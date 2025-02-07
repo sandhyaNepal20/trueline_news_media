@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:trueline_news_media/app/shared_prefs/token_shared_prefs.dart';
+import 'package:trueline_news_media/core/error/failure.dart';
 import 'package:trueline_news_media/features/auth/domain/repository/auth_repository.dart';
 import 'package:trueline_news_media/features/auth/domain/use_case/login_user_usecase.dart';
 
@@ -39,6 +40,17 @@ void main() {
 
       expect(result, const Right(testToken));
       verify(() => mockTokenSharedPrefs.saveToken(testToken)).called(1);
+    });
+
+    test('should return ApiFailure when login fails', () async {
+      const failure = ApiFailure(message: 'Login failed', statusCode: 500);
+      when(() => mockAuthRepository.loginStudent(testemail, testPassword))
+          .thenAnswer((_) async => const Left(failure));
+
+      final result = await loginUseCase(params);
+
+      expect(result, const Left(failure));
+      verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
     });
   });
 }

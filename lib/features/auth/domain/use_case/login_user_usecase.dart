@@ -30,19 +30,23 @@ class LoginUseCase implements UsecaseWithParams<String, LoginParams> {
   LoginUseCase(this.repository, this.tokenSharedPrefs);
 
   @override
-  Future<Either<Failure, String>> call(LoginParams params) {
-    // Save token in Shared Preferences
-    return repository.loginStudent(params.email, params.password).then((value) {
-      return value.fold(
-        (failure) => Left(failure),
-        (token) {
-          tokenSharedPrefs.saveToken(token);
-          tokenSharedPrefs.getToken().then((value) {
-            print(value);
-          });
-          return Right(token);
-        },
-      );
-    });
+  Future<Either<Failure, String>> call(LoginParams params) async {
+    // Check for empty email or password and return a failure immediately
+    if (params.email.isEmpty || params.password.isEmpty) {
+      return const Left(
+          ApiFailure(message: 'email or password cannot be empty'));
+    }
+
+    // Proceed with the login if inputs are valid
+    final result = await repository.loginStudent(params.email, params.password);
+
+    return result.fold(
+      (failure) => Left(failure), // If login fails, return the failure
+      (token) {
+        tokenSharedPrefs
+            .saveToken(token); // Save the token if login is successful
+        return Right(token); // Return the token if successful
+      },
+    );
   }
 }

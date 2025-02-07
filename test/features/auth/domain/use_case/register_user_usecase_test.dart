@@ -51,4 +51,25 @@ void main() {
     verify(() => repository.registerStudent(any())).called(1);
     verifyNoMoreInteractions(repository);
   });
+
+  test('should register with an image successfully', () async {
+    // Arrange
+    when(() => repository.registerStudent(any()))
+        .thenAnswer((_) async => const Right(null));
+
+    // Act
+    final result = await useCase(
+      const RegisterUserParams(
+        fullName: 'Sandhya Nepal',
+        email: 'sandhya@example.com',
+        password: 'securePass123',
+        image: 'sandhya_profile.jpg',
+      ),
+    );
+
+    // Assert
+    expect(result, equals(const Right(null)));
+    verify(() => repository.registerStudent(any())).called(1);
+    verifyNoMoreInteractions(repository);
+  });
 }

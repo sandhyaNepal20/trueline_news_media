@@ -63,5 +63,15 @@ void main() {
       expect(result, const Left(failure));
       verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
     });
+
+    test('should handle invalid input (empty email or password)', () async {
+      const invalidParams = LoginParams(email: '', password: '');
+
+      final result = await loginUseCase(invalidParams);
+
+      expect(result,
+          const Left(ApiFailure(message: 'email or password cannot be empty')));
+      verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
+    });
   });
 }

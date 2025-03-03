@@ -12,47 +12,40 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        // title: const Text('Login'),
-        //   centerTitle: true,
-        //   automaticallyImplyLeading: false, // Disable back button if needed
-        // ),
-        // backgroundColor: Colors.white,
         body: SafeArea(
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Image.asset(
-                'assets/images/logo1.png', // Replace with your image path
-                height: 200,
-              ),
-
-              // Login title
-              const Text(
-                'Log In',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF004AAD),
+      child: Form(
+        key: _formKey,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                Image.asset(
+                  'assets/images/logo1.png',
+                  height: 200,
                 ),
-              ),
-              const SizedBox(height: 30),
 
-              // Login Form
-              Form(
-                key: _formKey,
-                child: Column(
+                // Login title
+                const Text(
+                  'Log In',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF004AAD),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                Column(
                   children: [
                     // Email input
                     TextFormField(
@@ -122,27 +115,20 @@ class _LoginViewState extends State<LoginView> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            final email = _emailController.text;
-                            final password = _passwordController.text;
-                            debugPrint(
-                                "Form is valid! Email: $email, Password: $password");
-
+                          if (_formKey.currentState!.validate() ?? false) {
                             context.read<LoginBloc>().add(
                                   LoginUserEvent(
-                                    email: email,
-                                    password: password,
                                     context: context,
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
                                   ),
                                 );
-                          } else {
-                            debugPrint("Form is invalid!");
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF004AAD),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 15),
                         ),
@@ -199,8 +185,8 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -17,7 +17,7 @@
 //     const HomeScreen(),
 //     const SearchView(),
 //     const SaveView(),
-//     const ProfileView(),
+//     const MyProfileView(),
 //   ];
 
 //   String selectedCategory = 'All'; // Track selected category

@@ -13,6 +13,11 @@ import 'package:trueline_news_media/features/auth/domain/use_case/register_user_
 import 'package:trueline_news_media/features/auth/domain/use_case/upload_image_usecase.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
+import 'package:trueline_news_media/features/dashboard/data/data_source/remote_datasource/news_remote_datasource.dart';
+import 'package:trueline_news_media/features/dashboard/data/repository/news_remote_repository.dart';
+import 'package:trueline_news_media/features/dashboard/domain/use_case/get_all_news_usecase.dart';
+import 'package:trueline_news_media/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:trueline_news_media/features/home/presentation/view_model/home_cubit.dart';
 import 'package:trueline_news_media/features/onboarding/presentation/view_model/onboarding_cubit.dart';
 import 'package:trueline_news_media/features/splash/presentation/view_model/splash_cubit.dart';
 
@@ -27,6 +32,8 @@ Future<void> initDependencies() async {
   await _initOnboardingDependencies();
   await _initRegisterDependencies();
   await _initLoginDependencies();
+  await _initHomeDependencies();
+  await _initDashboardDependencies();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -103,15 +110,49 @@ _initLoginDependencies() async {
 
   getIt.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(
-      getIt<AuthLocalRepository>(),
+      getIt<AuthRemoteRepository>(),
       getIt<TokenSharedPrefs>(),
     ),
   );
 
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
-      signupBloc: getIt<SignupBloc>(),
-      loginUseCase: getIt<LoginUseCase>(),
+        signupBloc: getIt<SignupBloc>(),
+        loginUseCase: getIt<LoginUseCase>(),
+        homeCubit: getIt<HomeCubit>()),
+  );
+}
+
+_initHomeDependencies() async {
+  getIt.registerFactory<HomeCubit>(
+    () => HomeCubit(),
+  );
+}
+
+_initDashboardDependencies() async {
+  // =========================== Data Source ===========================
+
+  getIt.registerLazySingleton<NewsRemoteDataSource>(
+    () => NewsRemoteDataSource(
+      dio: getIt<Dio>(),
+    ),
+  );
+  // =========================== Repository ===========================
+  getIt.registerLazySingleton(
+    () => NewsRemoteRepository(
+      remoteDataSource: getIt<NewsRemoteDataSource>(),
+    ),
+  );
+  // =========================== Usecases ===========================
+
+  getIt.registerLazySingleton<GetAllNewsUseCase>(
+    () => GetAllNewsUseCase(newsRepository: getIt<NewsRemoteRepository>()),
+  );
+  // =========================== Bloc ===========================
+
+  getIt.registerFactory<DashboardBloc>(
+    () => DashboardBloc(
+      getAllNewsUseCase: getIt<GetAllNewsUseCase>(),
     ),
   );
 }

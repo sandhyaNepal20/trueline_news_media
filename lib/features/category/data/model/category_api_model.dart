@@ -2,28 +2,30 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:trueline_news_media/features/category/domain/entity/category_entity.dart';
 
+part 'category_api_model.g.dart';
+
 @JsonSerializable()
 class CategoryApiModel extends Equatable {
   @JsonKey(name: '_id')
-  final String? product_categoryId;
+  final String? news_categoryId;
   final String categoryName;
   final String categoryDescription;
 
   const CategoryApiModel({
-    this.product_categoryId,
+    this.news_categoryId,
     required this.categoryName,
     required this.categoryDescription,
   });
 
   const CategoryApiModel.empty()
-      : product_categoryId = '',
+      : news_categoryId = '',
         categoryName = '',
         categoryDescription = '';
 
   // From Json , write full code without generator
   factory CategoryApiModel.fromJson(Map<String, dynamic> json) {
     return CategoryApiModel(
-      product_categoryId: json['_id'],
+      news_categoryId: json['_id'],
       categoryName: json['name'],
       categoryDescription: json['description'],
     );
@@ -32,7 +34,7 @@ class CategoryApiModel extends Equatable {
   // To Json , write full code without generator
   Map<String, dynamic> toJson() {
     return {
-      '_id': product_categoryId,
+      '_id': news_categoryId,
       'name': categoryName,
       'description': categoryDescription,
     };
@@ -40,7 +42,7 @@ class CategoryApiModel extends Equatable {
 
   // Convert API Object to Entity
   CategoryEntity toEntity() => CategoryEntity(
-        product_categoryId: product_categoryId,
+        news_categoryId: news_categoryId,
         categoryName: categoryName,
         categoryDescription: categoryDescription,
       );
@@ -57,7 +59,7 @@ class CategoryApiModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        product_categoryId,
+        news_categoryId,
         categoryName,
         categoryDescription,
       ];

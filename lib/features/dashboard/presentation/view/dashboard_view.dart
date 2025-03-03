@@ -28,6 +28,7 @@ class _DashboardViewState extends State<DashboardView> {
   void initState() {
     super.initState();
     context.read<DashboardBloc>().add(LoadNews()); // Fetch news on load
+    context.read<DashboardBloc>().add(LoadCategories()); // Fetch categories
   }
 
   @override
@@ -36,36 +37,59 @@ class _DashboardViewState extends State<DashboardView> {
       builder: (context, constraints) {
         return SafeArea(
           child: Scaffold(
-            body: _selectedIndex == 0
-                ? BlocBuilder<DashboardBloc, DashboardState>(
-                    builder: (context, state) {
-                      if (state.isLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state.error != null) {
-                        return Center(child: Text('Error: ${state.error}'));
-                      } else if (state.news.isEmpty) {
-                        return const Center(child: Text('No news available'));
-                      }
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCategoryButtons(), // Always at the top
+                Expanded(
+                  child: _selectedIndex == 0
+                      ? BlocBuilder<DashboardBloc, DashboardState>(
+                          builder: (context, state) {
+                            if (state.isLoading && state.news.isEmpty) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (state.error != null) {
+                              return Center(
+                                  child: Text('Error: ${state.error}'));
+                            }
 
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildCategoryButtons(),
-                              const SizedBox(height: 20),
-                              _buildHighlightedNews(state.news),
-                              const SizedBox(height: 20),
-                              _buildLatestNews(
-                                  state.news, constraints.maxWidth),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : lstBottomScreen[_selectedIndex],
+                            List<NewsEntity> filteredNews =
+                                selectedCategory == 'All'
+                                    ? state.news
+                                    : state.news
+                                        .where((news) =>
+                                            news.categoryId?.categoryName ==
+                                            selectedCategory)
+                                        .toList();
+
+                            if (filteredNews.isEmpty) {
+                              return const Center(
+                                  child: Text(
+                                      'No news available for this category'));
+                            }
+
+                            return SingleChildScrollView(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    _buildHighlightedNews(filteredNews),
+                                    const SizedBox(height: 20),
+                                    _buildLatestNews(
+                                        filteredNews, constraints.maxWidth),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : lstBottomScreen[_selectedIndex],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -73,23 +97,30 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget _buildCategoryButtons() {
-    List<String> categories = [
-      'All',
-      'Politics',
-      'Sports',
-      'Education',
-      'Technology',
-      'Entertainment',
-      'Science'
-    ];
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (context, state) {
+        if (state.isLoading && state.categories.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.error != null) {
+          return Center(child: Text('Error: ${state.error}'));
+        }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: categories
-            .map((category) => _buildCategoryButton(category))
-            .toList(),
-      ),
+        List<String> categories = ['All'];
+        categories
+            .addAll(state.categories.map((category) => category.categoryName));
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: categories
+                  .map((category) => _buildCategoryButton(category))
+                  .toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -167,6 +198,7 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
+  /// **🔹 News Card Widget**
   Widget _buildNewsCard(NewsEntity newsItem) {
     return GestureDetector(
       onTap: () => _navigateToNewsDetails(newsItem),
@@ -211,11 +243,9 @@ class _DashboardViewState extends State<DashboardView> {
         builder: (context) => NewsDetailsView(
           newsData: {
             'title': newsItem.title,
-            'category': newsItem.categoryId?.categoryName ??
-                "Uncategorized", // ✅ Safe null handling
+            'category': newsItem.categoryId?.categoryName,
+            'content': newsItem.content,
             'date': newsItem.created_at,
-            'content': newsItem.content, // ✅ Added content field
-
             'image': "http://192.168.1.81:3000/news_image/${newsItem.image}",
           },
         ),

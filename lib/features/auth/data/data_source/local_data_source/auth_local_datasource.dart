@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:trueline_news_media/core/network/hive_service.dart';
 import 'package:trueline_news_media/features/auth/data/data_source/auth_data_source.dart';
 import 'package:trueline_news_media/features/auth/data/model/auth_hive_model.dart';
@@ -42,8 +44,8 @@ class AuthLocalDataSource implements IAuthDataSource {
     }
   }
 
-  // @override
-  // Future<String> uploadProfilePicture(File file) {
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<String> uploadProfilePicture(File file) {
+    throw UnimplementedError();
+  }
 }

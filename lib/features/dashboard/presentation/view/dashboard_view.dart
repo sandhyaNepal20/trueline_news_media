@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:trueline_news_media/features/dashboard/domain/entity/news_entity.dart';
 import 'package:trueline_news_media/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:trueline_news_media/features/myprofile/presentation/view/myprofile_view.dart';
@@ -15,6 +18,10 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+  // Sensor variables for parallax effect
+  Offset offset = Offset.zero;
+  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
+
   final int _selectedIndex = 0;
   String selectedCategory = 'All';
 
@@ -27,72 +34,91 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   void initState() {
     super.initState();
-    context.read<DashboardBloc>().add(LoadNews()); // Fetch news on load
-    context.read<DashboardBloc>().add(LoadCategories()); // Fetch categories
+    // Fetch news and categories when the view is initialized.
+    context.read<DashboardBloc>().add(LoadNews());
+    context.read<DashboardBloc>().add(LoadCategories());
+
+    // Subscribe to accelerometer events to get sensor data.
+    _accelerometerSubscription = accelerometerEvents.listen((event) {
+      // Adjust the multiplier as needed for the desired movement sensitivity.
+      double dx = event.x * 5.0;
+      double dy = event.y * 5.0;
+      setState(() {
+        offset = Offset(dx, dy);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _accelerometerSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SafeArea(
-          child: Scaffold(
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildCategoryButtons(), // Always at the top
-                Expanded(
-                  child: _selectedIndex == 0
-                      ? BlocBuilder<DashboardBloc, DashboardState>(
-                          builder: (context, state) {
-                            if (state.isLoading && state.news.isEmpty) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (state.error != null) {
-                              return Center(
-                                  child: Text('Error: ${state.error}'));
-                            }
+    // Get screen dimensions for responsive UI adjustments.
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
 
-                            List<NewsEntity> filteredNews =
-                                selectedCategory == 'All'
-                                    ? state.news
-                                    : state.news
-                                        .where((news) =>
-                                            news.categoryId?.categoryName ==
-                                            selectedCategory)
-                                        .toList();
+    // Wrap the dashboard content in a Transform widget using the sensor offset.
+    Widget content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildCategoryButtons(),
+        Expanded(
+          child: _selectedIndex == 0
+              ? BlocBuilder<DashboardBloc, DashboardState>(
+                  builder: (context, state) {
+                    if (state.isLoading && state.news.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state.error != null) {
+                      return Center(child: Text('Error: ${state.error}'));
+                    }
 
-                            if (filteredNews.isEmpty) {
-                              return const Center(
-                                  child: Text(
-                                      'No news available for this category'));
-                            }
+                    List<NewsEntity> filteredNews = selectedCategory == 'All'
+                        ? state.news
+                        : state.news
+                            .where((news) =>
+                                news.categoryId?.categoryName ==
+                                selectedCategory)
+                            .toList();
 
-                            return SingleChildScrollView(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 20),
-                                    _buildHighlightedNews(filteredNews),
-                                    const SizedBox(height: 20),
-                                    _buildLatestNews(
-                                        filteredNews, constraints.maxWidth),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      : lstBottomScreen[_selectedIndex],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+                    if (filteredNews.isEmpty) {
+                      return const Center(
+                          child: Text('No news available for this category'));
+                    }
+
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: screenHeight * 0.03),
+                            _buildHighlightedNews(filteredNews, screenWidth),
+                            SizedBox(height: screenHeight * 0.03),
+                            _buildLatestNews(filteredNews, screenWidth),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : lstBottomScreen[_selectedIndex],
+        ),
+      ],
+    );
+
+    return SafeArea(
+      child: Scaffold(
+        // Apply the sensor offset to the entire dashboard content.
+        body: Transform.translate(
+          offset: offset,
+          child: content,
+        ),
+      ),
     );
   }
 
@@ -144,16 +170,19 @@ class _DashboardViewState extends State<DashboardView> {
         child: Text(
           category,
           style: TextStyle(
-              color: selectedCategory == category
-                  ? Colors.white
-                  : const Color(0xFF004AAD)),
+            color: selectedCategory == category
+                ? Colors.white
+                : const Color(0xFF004AAD),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildHighlightedNews(List<NewsEntity> news) {
+  Widget _buildHighlightedNews(List<NewsEntity> news, double screenWidth) {
     final highlightedNews = news.first;
+    // Adjust container height based on screen width.
+    double containerHeight = screenWidth > 600 ? 400 : 300;
 
     return GestureDetector(
       onTap: () => _navigateToNewsDetails(highlightedNews),
@@ -162,23 +191,30 @@ class _DashboardViewState extends State<DashboardView> {
           borderRadius: BorderRadius.circular(15),
           image: DecorationImage(
             image: NetworkImage(
-                "http://192.168.1.81:3000/news_image/${highlightedNews.image}"),
+              "http://192.168.1.81:3000/news_image/${highlightedNews.image}",
+            ),
             fit: BoxFit.cover,
           ),
         ),
-        height: 380,
+        height: containerHeight,
       ),
     );
   }
 
   Widget _buildLatestNews(List<NewsEntity> news, double screenWidth) {
+    // Adjust grid columns based on screen width.
     int crossAxisCount = screenWidth > 600 ? 3 : 2;
+    // Adjust header font size based on screen width.
+    double headerFontSize = screenWidth > 600 ? 22 : 19;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Latest News',
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+        Text(
+          'Latest News',
+          style:
+              TextStyle(fontSize: headerFontSize, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 10),
         GridView.builder(
           shrinkWrap: true,
@@ -198,7 +234,6 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  /// **🔹 News Card Widget**
   Widget _buildNewsCard(NewsEntity newsItem) {
     return GestureDetector(
       onTap: () => _navigateToNewsDetails(newsItem),
@@ -217,18 +252,21 @@ class _DashboardViewState extends State<DashboardView> {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Icon(
-                    Icons.broken_image,
-                    size: 100,
-                    color: Colors.grey),
+                  Icons.broken_image,
+                  size: 100,
+                  color: Colors.grey,
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(newsItem.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 19)),
+              child: Text(
+                newsItem.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+              ),
             ),
           ],
         ),

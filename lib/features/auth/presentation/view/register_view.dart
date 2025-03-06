@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trueline_news_media/features/auth/presentation/view/login_view.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
   @override
-  State<RegisterView> createState() => _SignUpViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _SignUpViewState extends State<RegisterView> {
+class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -18,28 +21,34 @@ class _SignUpViewState extends State<RegisterView> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  bool _isPasswordVisible = false; // To toggle visibility of password
-  bool _isConfirmPasswordVisible =
-      false; // To toggle visibility of confirm password
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
-  void _handleSignUp() {
-    if (_formKey.currentState!.validate()) {
-      // Show success snack bar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign Up Successful!'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
+  // Check for camera permission
+  Future<void> checkCameraPermission() async {
+    if (await Permission.camera.request().isRestricted ||
+        await Permission.camera.request().isDenied) {
+      await Permission.camera.request();
+    }
+  }
 
-      // Navigate to LoginView after delay
-      Future.delayed(const Duration(seconds: 2), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginView()),
-        );
-      });
+  File? _img;
+  Future _browseImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      if (image != null) {
+        setState(() {
+          _img = File(image.path);
+          // Send image to server
+          context.read<SignupBloc>().add(
+                UploadImage(file: _img!),
+              );
+        });
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -51,7 +60,7 @@ class _SignUpViewState extends State<RegisterView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF004AAD)),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous page
+            Navigator.pop(context);
           },
         ),
         elevation: 0,
@@ -63,122 +72,89 @@ class _SignUpViewState extends State<RegisterView> {
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Title
-                const Center(
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _browseImage(ImageSource.camera);
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.camera),
+                              label: const Text('Camera'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _browseImage(ImageSource.gallery);
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.image),
+                              label: const Text('Gallery'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: _img != null
+                        ? FileImage(_img!)
+                        : const AssetImage('assets/images/profile.jpg')
+                            as ImageProvider,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Sign Up',
+                  style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF004AAD),
-                    ),
-                  ),
+                      color: Color(0xFF004AAD)),
                 ),
                 const SizedBox(height: 20),
-                // Full Name Input
-                TextFormField(
-                  controller: _fullNameController,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name', // Label text for the full name
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    prefixIcon:
-                        const Icon(Icons.person, color: Color(0xFF004AAD)),
-                  ),
-                  validator: _validateFullName,
-                ),
+                _buildTextField(_fullNameController, 'Full Name', Icons.person,
+                    _validateFullName),
                 const SizedBox(height: 15),
-                // Email Input
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email', // Label text for the email
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    prefixIcon:
-                        const Icon(Icons.email, color: Color(0xFF004AAD)),
-                  ),
-                  validator: _validateEmail,
-                ),
+                _buildTextField(
+                    _emailController, 'Email', Icons.email, _validateEmail),
                 const SizedBox(height: 15),
-                // Password Input
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: 'Password', // Label text for the password
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    prefixIcon:
-                        const Icon(Icons.lock, color: Color(0xFF004AAD)),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  validator: _validatePassword,
-                ),
+                _buildPasswordField(
+                    _passwordController, 'Password', _isPasswordVisible, () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                }),
                 const SizedBox(height: 15),
-                // Confirm Password Input
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: !_isConfirmPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText:
-                        'Confirm Password', // Label text for confirm password
-                    labelStyle: const TextStyle(color: Color(0xFF004AAD)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    prefixIcon:
-                        const Icon(Icons.lock, color: Color(0xFF004AAD)),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isConfirmPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isConfirmPasswordVisible =
-                              !_isConfirmPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  validator: _validateConfirmPassword,
-                ),
+                _buildPasswordField(_confirmPasswordController,
+                    'Confirm Password', _isConfirmPasswordVisible, () {
+                  setState(() {
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                  });
+                }),
                 const SizedBox(height: 20),
-                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
+                      if (_formKey.currentState!.validate()) {
+                        final registerState = context.read<SignupBloc>().state;
+                        final imageName = registerState.imageName;
                         context.read<SignupBloc>().add(
                               RegisterUser(
                                 context: context,
                                 fullName: _fullNameController.text,
                                 email: _emailController.text,
                                 password: _confirmPasswordController.text,
+                                image: imageName,
                               ),
                             );
                       }
@@ -192,29 +168,24 @@ class _SignUpViewState extends State<RegisterView> {
                     ),
                     child: const Text(
                       'Sign Up',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Already have an account? Sign In
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('Already have an account? '),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pop(context); // Navigate to Login page
+                        Navigator.pop(context);
                       },
                       child: const Text(
                         'Sign In',
                         style: TextStyle(
-                          color: Color(0xFF004AAD),
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Color(0xFF004AAD),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -227,43 +198,51 @@ class _SignUpViewState extends State<RegisterView> {
     );
   }
 
-  //-----------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------
 
-  // Validation Functions
-  String? _validateFullName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your full name';
-    }
-    return null;
+  Widget _buildTextField(TextEditingController controller, String label,
+      IconData icon, String? Function(String?)? validator) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        prefixIcon: Icon(icon, color: const Color(0xFF004AAD)),
+      ),
+      validator: validator,
+    );
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
+  Widget _buildPasswordField(TextEditingController controller, String label,
+      bool isVisible, VoidCallback toggleVisibility) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !isVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        prefixIcon: const Icon(Icons.lock, color: Color(0xFF004AAD)),
+        suffixIcon: IconButton(
+          icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey),
+          onPressed: toggleVisibility,
+        ),
+      ),
+      validator:
+          label == 'Password' ? _validatePassword : _validateConfirmPassword,
+    );
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please confirm your password';
-    }
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
-  }
+  String? _validateFullName(String? value) =>
+      value == null || value.isEmpty ? 'Please enter your full name' : null;
+  String? _validateEmail(String? value) => value == null ||
+          value.isEmpty ||
+          !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)
+      ? 'Please enter a valid email'
+      : null;
+  String? _validatePassword(String? value) => value == null || value.length < 6
+      ? 'Password must be at least 6 characters'
+      : null;
+  String? _validateConfirmPassword(String? value) =>
+      value != _passwordController.text ? 'Passwords do not match' : null;
 }

@@ -7,12 +7,23 @@ import 'package:trueline_news_media/features/auth/domain/repository/auth_reposit
 class RegisterUserParams extends Equatable {
   final String fullName;
   final String email;
+  final String? image;
   final String password;
 
   const RegisterUserParams({
     required this.fullName,
     required this.email,
     required this.password,
+    this.image,
+  });
+
+  //intial constructor
+
+  const RegisterUserParams.initial({
+    required this.fullName,
+    required this.email,
+    required this.password,
+    this.image,
   });
 
   @override
@@ -29,6 +40,7 @@ class RegisterUserUseCase {
       fullName: params.fullName,
       email: params.email,
       password: params.password,
+      image: params.image,
     );
     return repository.registerStudent(authEntity);
   }

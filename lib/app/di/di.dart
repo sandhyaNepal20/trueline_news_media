@@ -13,6 +13,9 @@ import 'package:trueline_news_media/features/auth/domain/use_case/register_user_
 import 'package:trueline_news_media/features/auth/domain/use_case/upload_image_usecase.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:trueline_news_media/features/auth/presentation/view_model/signup/signup_bloc.dart';
+import 'package:trueline_news_media/features/category/data/data_source/remote_datasource/category_remote_data_source.dart';
+import 'package:trueline_news_media/features/category/data/repository/category_remote_repository.dart';
+import 'package:trueline_news_media/features/category/domain/use_case/get_all_category_usecase.dart';
 import 'package:trueline_news_media/features/dashboard/data/data_source/remote_datasource/news_remote_datasource.dart';
 import 'package:trueline_news_media/features/dashboard/data/repository/news_remote_repository.dart';
 import 'package:trueline_news_media/features/dashboard/domain/use_case/get_all_news_usecase.dart';
@@ -137,22 +140,41 @@ _initDashboardDependencies() async {
       dio: getIt<Dio>(),
     ),
   );
+
+  getIt.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSource(
+      dio: getIt<Dio>(),
+    ),
+  );
   // =========================== Repository ===========================
   getIt.registerLazySingleton(
     () => NewsRemoteRepository(
       remoteDataSource: getIt<NewsRemoteDataSource>(),
     ),
   );
+  getIt.registerLazySingleton(
+    () => CategoryRemoteRepository(
+      remoteDataSource: getIt<CategoryRemoteDataSource>(),
+    ),
+  );
+
   // =========================== Usecases ===========================
 
   getIt.registerLazySingleton<GetAllNewsUseCase>(
     () => GetAllNewsUseCase(newsRepository: getIt<NewsRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetAllCategoryUseCase>(
+    () => GetAllCategoryUseCase(
+        categoryRepository: getIt<CategoryRemoteRepository>()), // ✅ Fixed
   );
   // =========================== Bloc ===========================
 
   getIt.registerFactory<DashboardBloc>(
     () => DashboardBloc(
       getAllNewsUseCase: getIt<GetAllNewsUseCase>(),
+      getAllCategoriesUseCase:
+          getIt<GetAllCategoryUseCase>(), // ✅ Pass category use case
     ),
   );
 }

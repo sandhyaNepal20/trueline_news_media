@@ -24,7 +24,8 @@ class _RegisterViewState extends State<RegisterView> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  // Check for camera permission
+  File? _img;
+
   Future<void> checkCameraPermission() async {
     if (await Permission.camera.request().isRestricted ||
         await Permission.camera.request().isDenied) {
@@ -32,20 +33,16 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
-  File? _img;
   Future _browseImage(ImageSource imageSource) async {
     try {
       final image = await ImagePicker().pickImage(source: imageSource);
       if (image != null) {
         setState(() {
           _img = File(image.path);
-          // Send image to server
           context.read<SignupBloc>().add(
                 UploadImage(file: _img!),
               );
         });
-      } else {
-        return;
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -54,6 +51,10 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isTablet = screenWidth > 600;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -68,7 +69,9 @@ class _RegisterViewState extends State<RegisterView> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: isTablet ? screenWidth * 0.2 : 20, // Adjust for tablets
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -105,42 +108,43 @@ class _RegisterViewState extends State<RegisterView> {
                     );
                   },
                   child: CircleAvatar(
-                    radius: 50,
+                    radius: isTablet ? 70 : 50,
                     backgroundImage: _img != null
                         ? FileImage(_img!)
                         : const AssetImage('assets/images/profile.jpg')
                             as ImageProvider,
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                SizedBox(height: isTablet ? 30 : 20),
+                Text(
                   'Sign Up',
                   style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF004AAD)),
+                    fontSize: isTablet ? 28 : 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF004AAD),
+                  ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isTablet ? 30 : 20),
                 _buildTextField(_fullNameController, 'Full Name', Icons.person,
-                    _validateFullName),
-                const SizedBox(height: 15),
-                _buildTextField(
-                    _emailController, 'Email', Icons.email, _validateEmail),
-                const SizedBox(height: 15),
+                    _validateFullName, isTablet),
+                SizedBox(height: isTablet ? 20 : 15),
+                _buildTextField(_emailController, 'Email', Icons.email,
+                    _validateEmail, isTablet),
+                SizedBox(height: isTablet ? 20 : 15),
                 _buildPasswordField(
                     _passwordController, 'Password', _isPasswordVisible, () {
                   setState(() {
                     _isPasswordVisible = !_isPasswordVisible;
                   });
-                }),
-                const SizedBox(height: 15),
+                }, isTablet),
+                SizedBox(height: isTablet ? 20 : 15),
                 _buildPasswordField(_confirmPasswordController,
                     'Confirm Password', _isConfirmPasswordVisible, () {
                   setState(() {
                     _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                   });
-                }),
-                const SizedBox(height: 20),
+                }, isTablet),
+                SizedBox(height: isTablet ? 30 : 20),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -164,15 +168,19 @@ class _RegisterViewState extends State<RegisterView> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(vertical: isTablet ? 20 : 15),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Sign Up',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: isTablet ? 20 : 18,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isTablet ? 30 : 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -198,10 +206,13 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-// --------------------------------------------------------------------
-
-  Widget _buildTextField(TextEditingController controller, String label,
-      IconData icon, String? Function(String?)? validator) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon,
+    String? Function(String?)? validator,
+    bool isTablet,
+  ) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -209,12 +220,18 @@ class _RegisterViewState extends State<RegisterView> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         prefixIcon: Icon(icon, color: const Color(0xFF004AAD)),
       ),
+      style: TextStyle(fontSize: isTablet ? 18 : 16),
       validator: validator,
     );
   }
 
-  Widget _buildPasswordField(TextEditingController controller, String label,
-      bool isVisible, VoidCallback toggleVisibility) {
+  Widget _buildPasswordField(
+    TextEditingController controller,
+    String label,
+    bool isVisible,
+    VoidCallback toggleVisibility,
+    bool isTablet,
+  ) {
     return TextFormField(
       controller: controller,
       obscureText: !isVisible,
@@ -228,6 +245,7 @@ class _RegisterViewState extends State<RegisterView> {
           onPressed: toggleVisibility,
         ),
       ),
+      style: TextStyle(fontSize: isTablet ? 18 : 16),
       validator:
           label == 'Password' ? _validatePassword : _validateConfirmPassword,
     );
